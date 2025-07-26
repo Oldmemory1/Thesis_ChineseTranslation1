@@ -4,12 +4,9 @@
 %%
 
 \begin{abstract}
-
+Large Language Models (LLMs) have transformed software development and automated code generation. Motivated by these advancements, this paper explores the feasibility of LLMs in modifying malware source code to generate variants. We introduce LLMalMorph, a semi-automated framework that leverages semantical and syntactical code comprehension by LLMs to generate new malware variants. LLMalMorph extracts function level information from the malware source code and employs custom-engineered prompts coupled with strategically defined code transformations to guide the LLM in generating variants without resource-intensive fine-tuning. To evaluate LLMalMorph, we collected 10 diverse Windows malware samples of varying types, complexity and functionality and generated 618 variants. Our thorough experiments demonstrate that it is possible to reduce the detection rates of antivirus engines of these malware variants to some extent while preserving malware functionalities. In addition, despite not optimizing against any Machine Learning(ML)-based malware detectors, several variants also achieved notable attack success rates against an ML-based malware classifier. We also discuss the limitations of current LLM capabilities in generating malware variants from source code and assess where this emerging technology stands in the broader context of malware variant generation.
 \end{abstract}
 
-% 如需手动控制换行连字符位置，可写 aa\-bb，详见
-% https://bithesis.bitnp.net/faq/hyphen.html
-
 \begin{abstractEn}
-
+大型语言模型（LLMs）已经改变了软件开发和自动化代码生成。受这些进展的激励，本文探索了LLMs修改恶意软件源代码以生成变种的可行性。我们引入了LLMalMorph，这是一个半自动化框架，它利用LLMs对代码的语义和语法理解来生成新的恶意软件变种。LLMalMorph从恶意软件源代码中提取函数级信息，并采用定制设计的提示词结合策略性定义的代码转换，来指导LLM生成变种，而无需资源密集型的微调。为了评估LLMalMorph，我们收集了10个不同类型、复杂度和功能的多样化Windows恶意软件样本，并生成了618个变种。我们详尽的实验表明，在保持恶意软件功能的同时，可以在一定程度上降低这些恶意软件变种对防病毒引擎的检测率。此外，尽管没有针对任何基于机器学习（ML）的恶意软件检测器进行优化，一些变种在对抗一个基于ML的恶意软件分类器时也取得了显著的攻击成功率。我们还讨论了当前LLM在从源代码生成恶意软件变种方面的能力局限性，并评估了这项新兴技术在更广泛的恶意软件变种生成背景下的现状。
 \end{abstractEn}
