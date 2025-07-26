@@ -41,3 +41,17 @@ LLMalMorph结合了自动化代码转换和人工监督来生成恶意软件变�
 
 \section{实验和分析}
 我们选择了10个不同复杂度的恶意软件样本，使用6种代码转换策略结合一个LLM生成了618个变种。我们使用主要依赖基于签名的检测和静态分析的引擎的VirusTotal\footnote{https://www.VirusTotal.com/gui/home}和Hybrid Analysis\footnote{https://hybrid-analysis.com/}评估了防病毒（AV）检测率，并测试了语义保留性。代码优化（Code Optimization）策略在两种工具上均持续实现了较低的检测率。平均而言，相对于每个样本的基准检测率，LLMalMorph在VirusTotal上将简单样本的检测率降低了31\%，将三个更复杂样本的检测率降低了10\%至15\%；在Hybrid Analysis上，与各自基准相比，四个样本的检测率降低了8\%至13\%。除了AV工具外，我们还在一个基于机器学习（ML）的恶意软件分类器上评估了LLMalMorph，并观察到在特定样本上，优化（Optimization）策略和安全（Security）策略取得了较高的攻击成功率（分别高达89\%和91\%）。诸如优化、安全和Windows API修改等策略需要更多手动编辑，其中Windows和安全策略需要更高的调试投入。值得注意的是，四个样本中超过66\%的规避型变种保留了其语义，这证明了LLMalMorph生成功能规避型恶意软件的能力。
+
+\section{贡献}
+总结而言，我们有以下贡献：
+
+• 我们设计并实现了LLMalMorph，一个实用的Windows恶意软件变种生成框架，它使用一个开源的LLM和基于提示词（prompt-based）的代码转换。
+
+• 我们在LLMalMorph中设计了一个人机协同（human-in-the-loop）机制，以解决LLM在调试多文件恶意软件源代码和项目级配置方面的局限性。
+
+• 我们进行了广泛的实验，从10个样本生成了618个恶意软件变种，并评估了它们在VirusTotal和Hybrid Analysis上的检测率和语义保留性，以及在一个机器学习分类器（ML Classifier）上的攻击成功率。
+
+• 我们使用代码编辑工作量（code editing workload）比较了不同代码转换策略的有效性，并讨论了LLM所犯错误的类型。
+
+\section{开源}
+LLMalMorph框架及其所有相关组件可在Github\footnote{https://github.com/AJAkil/LLMalMorph}找到。
