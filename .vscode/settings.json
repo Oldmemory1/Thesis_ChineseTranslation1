@@ -1,0 +1,65 @@
+{
+    "workbench.colorTheme": "Visual Studio Dark",
+
+  "latex-workshop.latex.tools":[
+    {
+      "name":"latexmk",
+      "command":"latexmk",
+      "args":[
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-xelatex",
+        "-outdir=%OUTDIR%",
+        "-cd",
+        "%DOC%"
+      ]
+    },
+    {
+      "name":"xelatex",
+      "command":"xelatex",
+      "args":[
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-pdf",
+        "-outdir=%OUTDIR%",
+        "-cd",
+        "%DOC%"
+      ],
+      "env":{
+        
+      }
+    },
+    {
+      "name":"biber",
+      "command":"biber",
+      "args":[
+        "%DOCFILE%"
+      ],
+      "env":{
+        
+      }
+    }
+  ],
+  "latex-workshop.latex.recipes":[
+    {
+      "name":"latexmk",
+      "tools":[
+        "latexmk"
+      ]
+    },
+    {
+      "name":"xelatex -> biber -> xelatex * 2",
+      "tools":[
+        "xelatex",
+        "biber",
+        "xelatex",
+        "xelatex"
+      ]
+    }
+  ],
+  "editor.wordWrap": "on",
+  "window.systemColorTheme": "dark",
+  "settingsSync.ignoredSettings": []
+}
