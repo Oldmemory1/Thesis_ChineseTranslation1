@@ -10,3 +10,8 @@
 恶意软件（Malware）指的是对手或攻击者用来在用户不知情的情况下，未经授权访问数字设备以破坏或窃取敏感信息的恶意程序 [26]。它是一个统称（umbrella term），用于描述广泛的威胁，包括木马（Trojans）、后门（backdoors）、病毒（viruses）、勒索软件（ransomware）、间谍软件（spyware）和僵尸程序（bots）[27]，针对多种操作系统，如Windows、macOS、Linux和Android，以及各种文件格式，如可移植可执行文件（Portable Executable, PE）、MachO、ELF、APK和PDF [28]。在入侵系统后，恶意软件可以执行各种恶意活动，例如渗透网络、加密数据以勒索赎金或降低系统性能。
 
 检测引擎和工具采用各种方法和工具来检测恶意软件。它们可以大致分为静态（static）、动态（dynamic）和混合（hybrid）方法 [28], [29]。静态检测在不执行恶意软件的情况下对其进行分析，依赖于诸如PE头信息（PE header information）、可读字符串（readable strings）和字节序列（byte sequences）等特征 [28]。动态检测涉及在受控环境（例如沙箱，sandboxes）中执行恶意软件，以监视运行时行为，如注册表修改（registry modifications）、进程创建（process creation）和网络活动（network activity）[28], [29]。混合检测结合了静态和动态特征，使用诸如操作码（opcodes）、对系统的API调用（API calls to the system）和控制流图（control flow graphs, CFGs）等数据 [28]。此外，基于启发式的检测（heuristic-based detection）使用启发式规则（heuristic rules）静态分析代码并动态分析行为，以确定恶意性 [30]。
+
+\subsection{LLMs和提示词工程}
+LLMs通过在翻译、摘要等任务中的卓越表现，改变了自然语言处理（NLP）的格局。基于transformer架构 [31]，LLMs利用了自注意力机制（self-attention mechanisms）。它们以自监督（self-supervised）方式在大规模语料库上进行预训练，以形成对语料库的深度上下文理解。预训练后，这些模型经过微调（fine-tuned）或指令微调（instruction-tuned）以执行特定任务。
+
+LLMs在编程任务中也展现了显著的能力，一些专门模型在大量代码和自然语言指令上进行了训练 [8], [9], [11], [12], [14]。这些模型最突出的特性之一是在推理过程中无需任务特定微调即可生成零样本代码（zero-shot code）（无需显式示例或参考）。这是通过提示词工程（prompt engineering）实现的，其中精心设计的输入提示词（prompts）指导模型生成期望的输出 [32]，使其成为代码合成（code synthesis）和重构（refactoring）等编程活动的多功能工具。
