@@ -19,7 +19,12 @@ Algorithm 1，专为功能变异模块设计，详细说明了三个子模块 Ex
 	\KwOut{转换后的函数集$\hat{F_{s}}=\{\hat{f_{1}^{i}},\hat{f_{2}^{i}}...,\hat{f_{j}^{i}}\}$}
 
     Headers,globals,functions$\{f_{1}^{i},f_{2}^{i},...,f_{G}^{i}\}\leftarrow extractor(i)$;
-    Initialize transformed function set $\hat{F_{s}}\leftarrow \emptyset$
+    Initialize transformed function set $\hat{F_{s}}\leftarrow \emptyset$;
 
-
+    \For{$t \gets 1$ \KwTo $j$}{
+        $p_{s}||f_{t}^{i} \leftarrow gen_prompt(s,f_{t}^{i},headers,globals)$;\\
+        Transform function: $\hat{f_{t}^{i}} \leftarrow LLM(p_{s}||f_{t}^{i})$;\\
+        Update set: $\hat{F_{s}} \leftarrow \hat{F_{s}} \cup \{\hat{f_{t}^{i}}\}$;
+    }
+    return $\hat{F_{s}}$
 \end{algorithm}
