@@ -87,3 +87,19 @@ Algorithm \ref{alg:Malware Variant Generation}，在变种合成模块中实现�
 
 \subsection{Windows API 特定转换}
 该策略使用提示来识别恶意软件函数内的 Windows API 调用，并引导 LLM 用替代或间接等效的 API 替换它们。它还可能引入包装函数以模糊直接的 API 使用。我们不是使用静态映射，而是利用 LLM 的生成能力来产生多样化的 API 替换，从而增加变异性并避免预定义映射的僵化性和可扩展性问题。尽管功能保持不变，但改变后的 API 模式可能会混淆基于启发式的检测系统（这些系统通常依赖常见的 Windows API 使用模式），从而使恶意软件更难以检测。
+
+\section{C. LLM的快速设计}
+在本节中，我们描述用于生成提示的Algorithm 3。我们还介绍了LLM在转换给定函数$f_{t}^{i}$时必须遵循的约束。
+
+它基于给定的转换策略$s$、第$t$个函数$f_{t}^{i}$以及文件$i$的$headers$和$globals$（如算法\ref{alg:Function Transformation Using LLM}中所定义）进行操作。该子程序以调用$system\_prompt$开始，生成$p_{sys}$。这定义了LLM作为专业编码助手的角色，该助手在系统编程以及C、C++和C\#等语言方面拥有专业知识，并确保代码转换是在适当的上下文和能力范围内进行的。随后，$intro\_prompt$通过接收目标函数$f_{t}^{i}$的名称生成$p_{intro}$，并指定必须使用以下预定义策略将提供的函数以及必要的头文件和全局变量转换为变体函数。接下来，使用$strategy\_prompt$和$s$生成转换策略提示$p_{strat}$。这些步骤建立了转换上下文并指导LLM执行所需的修改。
+
+\begin{algorithm}[htbp]
+	\caption{基于LLM实现函数转换的快速构造子程序\label{alg:Prompt Construction Subroutine for LLM-based Function Transformation}}
+    \SetKwFunction{FFunOne}{$GEN\_PROMPT$}
+    \SetKwProg{Fn}{Function}{:}{end}
+    \Fn{\FFunOne{$s$, $f_{t}^{i}$, $headers$, $globals$}}{
+        $p_{sys} \leftarrow system\_prompt()$;\\
+        $p_{intro} \leftarrow intro\_prompt(f_{t}^{i}.name)$;\\
+        $p_{strat} \leftarrow strategy\_prompt(s);$
+    }
+\end{algorithm}
