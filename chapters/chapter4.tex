@@ -58,3 +58,6 @@ Algorithm \ref{alg:Malware Variant Generation}，在变种合成模块中实现�
     }
     return $M_{s}$
 \end{algorithm}
+
+\subsection{Merger子模块}
+第 3 行首先提取函数子集 $\hat{F_{t}}$，该子集包含函数 1 到 $t$。下一行使用 $merger$ 子程序，用集合 $\hat{F_{t}}$ 更新文件 i。它将更新后的函数集成到文件 $i$ 中，同时保持其余函数不变，并利用在 LLM 使用算法 \ref{alg:Function Transformation Using LLM} 进行代码生成过程中的各种簿记信息。合并后，我们获得包含 $(1...t)$ 个修改后函数的更新文件 $\hat{i}$。$merger$ 子程序的更多细节详见附录 A-B。
