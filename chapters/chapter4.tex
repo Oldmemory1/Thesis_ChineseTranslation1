@@ -18,8 +18,8 @@ Algorithm \ref{alg:Function Transformation Using LLM}，专为功能变异模块
 	\KwIn{文件名$i$，需要改变的函数数量 $j$，转换策略 $s$，语言模型 $LLM$}
 	\KwOut{转换后的函数集$\hat{F_{s}}=\{\hat{f_{1}^{i}},\hat{f_{2}^{i}}...,\hat{f_{j}^{i}}\}$}
 
-    Headers,globals,functions$\{f_{1}^{i},f_{2}^{i},...,f_{G}^{i}\}\leftarrow extractor(i)$;
-    初始化转换后的函数集 $\hat{F_{s}}\leftarrow \emptyset$;
+    Headers,globals,functions$\{f_{1}^{i},f_{2}^{i},...,f_{G}^{i}\}\leftarrow extractor(i)$;\\
+    初始化转换后的函数集 $\hat{F_{s}}\leftarrow \emptyset$;\\
 
     \For{$t \gets 1$ \KwTo $j$}{
         $p_{s}||f_{t}^{i} \leftarrow gen\_prompt(s,f_{t}^{i},headers,globals)$;\\
@@ -40,16 +40,21 @@ Extractor 子模块（算法 \ref{alg:Function Transformation Using LLM} 的第 
 
 最后，第 6 行将转换后的函数 $f_{t}^{i}$ 追加到输出集合中。一旦所有选定的函数处理完毕，该算法即返回转换后的集合。我们注意到，该算法可以执行多次，以从同一源文件生成函数的多个变体。然而，在本工作中，对于每个选定的恶意软件样本，我们将评估限制在转换后函数的单一版本上。
 
-Algorithm 2，在变种合成模块中实现，使用由算法 \ref{alg:Function Transformation Using LLM} 产生的转换后函数集合 $\hat{F_{s}}$、恶意软件项目 $P$ 以及被修改的文件 $i$。它以增量方式生成恶意软件变体，并结合手动调试以确保成功编译。第 1 行初始化恶意软件变体的结果集合 $M_{s}$。该集合包含针对文件 $i$ 使用策略 $s$ 生成的恶意软件变体。尽管我们展示了针对某个特定文件的算法，但当我们处理后续文件时，先前处理过的文件的所有修改都会被保留并向前传递，从而确保恶意软件代码库的累积式转换。该算法的核心功能封装在第 2-10 行中，其中每个转换后的函数被迭代地集成和调试。
+Algorithm \ref{alg:Malware Variant Generation}，在变种合成模块中实现，使用由算法 \ref{alg:Function Transformation Using LLM} 产生的转换后函数集合 $\hat{F_{s}}$、恶意软件项目 $P$ 以及被修改的文件 $i$。它以增量方式生成恶意软件变体，并结合手动调试以确保成功编译。第 1 行初始化恶意软件变体的结果集合 $M_{s}$。该集合包含针对文件 $i$ 使用策略 $s$ 生成的恶意软件变体。尽管我们展示了针对某个特定文件的算法，但当我们处理后续文件时，先前处理过的文件的所有修改都会被保留并向前传递，从而确保恶意软件代码库的累积式转换。该算法的核心功能封装在第 2-10 行中，其中每个转换后的函数被迭代地集成和调试。
 
 \begin{algorithm}[htbp]
 	\caption{恶意软件变种生成\label{alg:Malware Variant Generation}}
 	\KwIn{恶意软件项目$P$，文件名 $i$，转换后的函数集合 $\{\hat{f_{1}^{i}},\hat{f_{2}^{i}}...,\hat{f_{j}^{i}}\}$}
 	\KwOut{编译后的恶意软件变种集合$M_{s}$}
-    初始化集合: $M_s \leftarrow \emptyset$;
+    初始化集合: $M_s \leftarrow \emptyset$;\\
     \For{$t \gets 1$ \KwTo $j$}{
         Extract subset of functions: $\hat{F_{t}} \leftarrow \{\hat{f_{k}^{i}} \in \hat{F_{s}} | 1\leq k\leq t\}$;\\   
         Generate updated file: $\hat{i} \leftarrow merger(i,\hat{F_{t}})$;\\
-
+        \While{$compile(P)$ fails}{
+            Debug project $P$ and resolve errors;
+        }
+        Compile project: $\hat{M_{s}} \leftarrow compile(P)$;\\
+        Add compiled malware: $M_{s} \leftarrow M_{s} \cup \hat{M_{s}}$;\\
     }
+    return $M_{s}$
 \end{algorithm}
