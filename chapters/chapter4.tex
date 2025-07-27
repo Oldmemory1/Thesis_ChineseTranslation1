@@ -112,3 +112,23 @@ Algorithm \ref{alg:Malware Variant Generation}，在变种合成模块中实现�
 保留提示$p_{pres}$试图确保原始函数和转换后的函数在语义上等价。它明确指示模型不要修改全局定义或自定义元素（变量、对象、常量）以保持功能一致性，从而避免整个代码库中可能出现的语法或语义错误。此外，$p_{addit}$施加严格的准则以保持一致的、符合语法的代码格式并保留函数签名，指示模型仅在单个特定语言的代码块中生成修改后的函数和必要的头文件，以便于解析和后处理。这确保了输出是完整的，不遗留未完成的代码块，并避免重新生成原始函数。
 
 在完成这些步骤后，代码的提示通过组合 $headers$、$globals$ 和函数 $f_{t}^{i}$ 的定义来构建，其中符号$\oplus$代表字符串连接。这使我们能够通过连接第 3−7 行的所有提示来构建总的用户提示 $p_{user}$。然后，通过连接 $p_{sys}$ 和 $p_{user}$ 来构建最终提示 $p_{s}||f_{t}^{i}$。这种结构化的方法确保 LLM 接收到用于转换任务的明确且完整的指令，同时满足所有必要的约束和要求。
+
+\begin{table}[htbp]
+	\centering
+	\caption{与先前研究的对比}
+	\label{tab:4.1}
+	\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}cccccccc}
+		\toprule
+		样本 & 语言 & LOC & 文件数量 & 函数数量 & VT率 & HA率 & 类型 \\
+		\midrule
+		{Qiao, Yanchen, et al. [18]} & 否 & 否 & 否 & 是 & 是 & 是 & 是 \\
+		{Tarallo [23]} & 否 & 否 & 否 & 是 & 是 & 是 & 是 \\
+		{Malware Makeover [20]} & 否 & 否 & 否 & 是 & 是 & 是 & 是 \\
+		{MalGuise [22]} & 否 & 否 & 否 & 是 & 是 & 是 & 是 \\
+		{Ming, Jiang, et al. [21]} & 否 & 否 & 是 & 是 & 是 & 是 & 是 \\
+		AMVG [19] & 是 & 否 & 否 & 是 & 是 & 是 & 是 \\
+        Botacin et al. [17] & 否 & 是 & 是 & 否 & 是 & 是 & 是 \\
+        LLMalMorph & 是 & 是 & 是 & 是 & 是 & 是 & 是 \\
+		\bottomrule
+	\end{tabular*}
+\end{table}
