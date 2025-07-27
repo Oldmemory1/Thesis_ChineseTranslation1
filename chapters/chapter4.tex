@@ -22,7 +22,7 @@ Algorithm \ref{alg:Function Transformation Using LLM}，专为功能变异模块
     Initialize transformed function set $\hat{F_{s}}\leftarrow \emptyset$;
 
     \For{$t \gets 1$ \KwTo $j$}{
-        $p_{s}||f_{t}^{i} \leftarrow gen_prompt(s,f_{t}^{i},headers,globals)$;\\
+        $p_{s}||f_{t}^{i} \leftarrow gen\_prompt(s,f_{t}^{i},headers,globals)$;\\
         Transform function: $\hat{f_{t}^{i}} \leftarrow LLM(p_{s}||f_{t}^{i})$;\\
         Update set: $\hat{F_{s}} \leftarrow \hat{F_{s}} \cup \{\hat{f_{t}^{i}}\}$;
     }
