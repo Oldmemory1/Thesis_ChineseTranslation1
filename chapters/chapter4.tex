@@ -34,3 +34,8 @@ Extractor 子模块（算法 \ref{alg:Function Transformation Using LLM} 的第 
 
 \subsection{Prompt Generator子模块}
 算法 \ref{alg:Function Transformation Using LLM} 的第 3−7 行对应于 Prompt Generator 和 LLM Transformation 子模块。第 4 行中的子程序 $gen\_prompt$ 被调用，参数为函数 $f_t^{i}$、转换策略 $s$ 以及提取的 $headers$ 和 $globals$。它将输入代码和策略构造成一个为 LLM 定制的提示 $p_{s}||f_{t}^{i}$。提示的设计详见第 IV-C 节。另请参阅附录 F 了解该子程序中使用的不同类型的提示，以及附录 G 了解一个完整构建的提示及其相应 LLM 响应的示例。
+
+\subsection{LLM Based Function Modifier子模块}
+算法 \ref{alg:Function Transformation Using LLM}的第5行将设计好的提示 $p_{s}||f_{t}^{i}$ 提供给选定的$LLM$，并获取转换后的函数。在代码生成过程中，我们使用了LLM的默认推理设置。具体而言，temperature=0.8，top-k=40，top-p=0.9。我们在附录A-A中提供了使用LLM进行代码生成过程的详细描述。
+
+最后，第 6 行将转换后的函数 $f_{t}^{i}$ 追加到输出集合中。一旦所有选定的函数处理完毕，该算法即返回转换后的集合。我们注意到，该算法可以执行多次，以从同一源文件生成函数的多个变体。然而，在本工作中，对于每个选定的恶意软件样本，我们将评估限制在转换后函数的单一版本上。
