@@ -30,4 +30,7 @@ Algorithm \ref{alg:Function Transformation Using LLM}，专为功能变异模块
 \end{algorithm}
 
 \subsection{Extractor子模块}
-Extractor 子模块（算法 1 的第 1 行）利用 extractor 子程序，该子程序接收一个源文件并遍历源代码的解析树。它从解析树中提取并存储以下两条辅助信息：全局声明的变量、结构体、编译器指令的列表，并将它们存储于 "globals" 中；以及所包含头文件的列表，并将它们存储于 "headers" 中。此类信息对于成功转换至关重要，因为它提供了函数可能使用的全局依赖项的基本上下文。以提示的形式将此上下文提供给 LLM 可确保生成更准确且语法正确的代码。此后，该子程序解析源文件以提取所有函数定义，生成集合$\{f_{1}^{i},f_{2}^{i},...,f_{G}^{i}\}$。
+Extractor 子模块（算法 \ref{alg:Function Transformation Using LLM} 的第 1 行）利用 extractor 子程序，该子程序接收一个源文件并遍历源代码的解析树。它从解析树中提取并存储以下两条辅助信息：全局声明的变量、结构体、编译器指令的列表，并将它们存储于 $globals$ 中；以及所包含头文件的列表，并将它们存储于 $headers$ 中。此类信息对于成功转换至关重要，因为它提供了函数可能使用的全局依赖项的基本上下文。以提示的形式将此上下文提供给 LLM 可确保生成更准确且语法正确的代码。此后，该子程序解析源文件以提取所有函数定义，生成集合$\{f_{1}^{i},f_{2}^{i},...,f_{G}^{i}\}$。
+
+\subsection{Prompt Generator子模块}
+算法 \ref{alg:Function Transformation Using LLM} 的第 3−7 行对应于 Prompt Generator 和 LLM Transformation 子模块。第 4 行中的子程序 $gen\_prompt$ 被调用，参数为函数 $f_t^{i}$、转换策略 $s$ 以及提取的 $headers$ 和 $globals$。它将输入代码和策略构造成一个为 LLM 定制的提示 $p_{s}||f_{t}^{i}$。提示的设计详见第 IV-C 节。另请参阅附录 F 了解该子程序中使用的不同类型的提示，以及附录 G 了解一个完整构建的提示及其相应 LLM 响应的示例。
