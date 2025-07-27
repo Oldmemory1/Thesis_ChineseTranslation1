@@ -11,10 +11,10 @@
 	\caption{LLMalMorph整体架构。该框架由两大核心模块构成：功能变异模块：从恶意软件源代码文件中提取功能函数，并借助LLM进行修改。变种合成模块：将修改后的函数更新至恶意软件源代码，通过编译项目生成变种文件}\label{fig:4.1}
 \end{figure}
 
-Algorithm 1，专为功能变异模块设计，详细说明了三个子模块 Extractor、Prompt Generator 和 LLM-Based Function Modifier 如何转换恶意软件源代码中的函数。该算法以文件名 $i$、要修改的函数数量 $j$、期望的转换策略 $s$ 以及选定的 $LLM$ 作为输入。接下来，我们将详细描述每个子模块。
+Algorithm \ref{alg:Function Transformation Using LLM}，专为功能变异模块设计，详细说明了三个子模块 Extractor、Prompt Generator 和 LLM-Based Function Modifier 如何转换恶意软件源代码中的函数。该算法以文件名 $i$、要修改的函数数量 $j$、期望的转换策略 $s$ 以及选定的 $LLM$ 作为输入。接下来，我们将详细描述每个子模块。
 
 \begin{algorithm}[htbp]
-	\caption{使用LLM转换函数}
+	\caption{使用LLM转换函数\label{alg:Function Transformation Using LLM}}
 	\KwIn{文件名$i$，需要改变的函数数量 $j$，转换策略 $s$，语言模型 $LLM$}
 	\KwOut{转换后的函数集$\hat{F_{s}}=\{\hat{f_{1}^{i}},\hat{f_{2}^{i}}...,\hat{f_{j}^{i}}\}$}
 
@@ -28,3 +28,6 @@ Algorithm 1，专为功能变异模块设计，详细说明了三个子模块 Ex
     }
     return $\hat{F_{s}}$
 \end{algorithm}
+
+\subsection{Extractor子模块}
+Extractor 子模块（算法 1 的第 1 行）利用 extractor 子程序，该子程序接收一个源文件并遍历源代码的解析树。它从解析树中提取并存储以下两条辅助信息：全局声明的变量、结构体、编译器指令的列表，并将它们存储于 "globals" 中；以及所包含头文件的列表，并将它们存储于 "headers" 中。此类信息对于成功转换至关重要，因为它提供了函数可能使用的全局依赖项的基本上下文。以提示的形式将此上下文提供给 LLM 可确保生成更准确且语法正确的代码。此后，该子程序解析源文件以提取所有函数定义，生成集合$\{f_{1}^{i},f_{2}^{i},...,f_{G}^{i}\}$。
