@@ -65,7 +65,7 @@
 	\label{tab:5.1}
 	\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}ccccccc}
 		\toprule
-		样本 & 优化 & 质量 & 可重用性 & 安全性 & 混淆 & Windows \\
+		样本 & Optimization & Quality & Reusability & Security & Obfuscation & Windows \\
 		\midrule
 		Fungus & 88.889 & 0 & 11.111 & 0 & 0 & 0 \\
 		Dexter & 50.00 & 16.667 & 0 & 41.667 & 33.333 & 0 \\
@@ -74,3 +74,10 @@
 		\bottomrule
 	\end{tabular*}
 \end{table}
+
+针对每个ML模型，我们选择其对应的0.1\%误报率（FPR）阈值作为检测阈值。Malconv与ResNet50模型未将原始10个样本中的任何样本识别为恶意软件，而Malgraph仅标记了Fungus、Dexter、Conti和Babuk样本。因此我们仅展示这四个样本在Malgraph上的检测结果。阈值设定细节详见附录E，攻击成功率（ASR）数据列于表\ref{tab:5.1}：
+
+第一列列出四个样本名称，后续列展示六种转换策略的攻击成功率（ASR）。Optimization策略在第一和第三样本中实现高ASR，在第二样本中取得中等成功率；Security策略在Babuk样本呈现高成功率，在Dexter样本为中等成功率，这与杀毒检测器的观测结果一致。Babuk样本在Quality策略下同样表现出显著成功率，与其在Hybrid Analysis（图2b）中的行为一致。Reusability与Obfuscation策略在两个样本中成功率较低，而Windows策略未能规避检测。
+
+
+尽管LLMalMorph通过提示词工程和精选转换策略修改函数（未直接针对任何ML恶意软件分类器进行优化），仍在部分样本的Optimization与Security等策略上展现出显著ASR，这支持了杀毒检测率降低的观测结论。正如先前在杀毒检测器语境中指出的，这些策略的高ASR可能源于LLM使用新库、新特性及控制流重组，这些改变很可能促进了规避成功。
