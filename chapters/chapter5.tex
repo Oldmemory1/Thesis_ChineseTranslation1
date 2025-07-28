@@ -57,3 +57,20 @@
 对于第5至第9个子图，检测率出现骤升现象，这是因为Hybrid Analysis有时跳过杀毒软件检测环节，仅依赖机器学习与静态分析，导致分数虚高（例如100/90）并扭曲平均值。Predator与Prosto样本整体变化极小，而Conti样本出现显著的Optimization策略特异性下降；这三个子图（5-7）的详细分析见附录D。在Babuk样本中，Optimization策略持续降低检测率，最低达74\%，较基准值83.667\%下降约10\%，该趋势与图2a一致。Quality与Obfuscation策略同样呈现下降趋势。对于RedPetya样本，Security策略在第9个函数处降至45.333\%，在第8个函数处为46.0\%，与图2a趋势一致，证明LLM在函数转换中的有效性。在RansomWar样本中，变种平均检测率36.697\%较基准值50.333\%低13.636\%。Security策略保持稳定的10\%检测率，而Windows策略以6\%的检测率达到最低值，较基准下降44\%。
 
 这些发现印证了VirusTotal的结果：Optimization、Security与Windows策略对降低检测率贡献最大。如前所述，Optimization策略可能重塑控制流与数据流，而Security策略采用替代性加密库会向修改后的恶意软件二进制文件引入新导入项和符号。这不仅影响基于签名的检测器，也可能影响混合检测使用的静态与机器学习检测器。值得注意的是，对于两个检测平台，检测率下降程度与被修改函数的数量无关，且可能产生相反效果。
+
+\subsection{机器学习分类器}
+\begin{table}[htbp]
+	\centering
+	\caption{各策略的 ASR(\%)。百分比已对不同变体数量进行标准化（Fungus：9 个变体/策略；Dexter：12 个；Conti：14 个；Babuk：11 个）。}
+	\label{tab:5.1}
+	\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}ccccccc}
+		\toprule
+		样本 & 优化 & 质量 & 可重用性 & 安全性 & 混淆 & Windows \\
+		\midrule
+		Fungus & 88.889 & 0 & 11.111 & 0 & 0 & 0 \\
+		Dexter & 50.00 & 16.667 & 0 & 41.667 & 33.333 & 0 \\
+		Conti & 71.429 & 0 & 0 & 0 & 0 & 0 \\
+		Babuk & 0 & 72.727 & 0 & 90.909 & 0 & 0 \\
+		\bottomrule
+	\end{tabular*}
+\end{table}
