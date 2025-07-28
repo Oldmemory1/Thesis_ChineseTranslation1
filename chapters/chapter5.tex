@@ -81,3 +81,22 @@
 
 
 尽管LLMalMorph通过提示词工程和精选转换策略修改函数（未直接针对任何ML恶意软件分类器进行优化），仍在部分样本的Optimization与Security等策略上展现出显著ASR，这支持了杀毒检测率降低的观测结论。正如先前在杀毒检测器语境中指出的，这些策略的高ASR可能源于LLM使用新库、新特性及控制流重组，这些改变很可能促进了规避成功。
+
+\subsection{比较分析}
+现有大多数对抗性恶意软件生成研究（包括Malguise[22]等最新框架）集中于直接修改已编译的二进制文件以生成规避性变种。因此，我们将LLMalMorph与领先的二进制级对抗性恶意软件生成框架Malguise进行对比。如研究问题1（RQ1）解答中机器学习分类器小节所述，仅有4/10样本（Fungus、Dexter、Conti和Babuk）被Malgraph分类器识别为恶意软件，其他分类器没有任何样本被判定为恶意。我们在上述四个样本上运行Malguise[22]，以Malgraph为规避目标，为每个样本生成对抗性变种。Fungus、Dexter和Babuk成功绕过Malgraph分类器，而Conti未能实现规避。尽管如此，我们收集了Malguise生成的所有对抗性变种（三个成功规避样本和一个未成功样本），通过VirusTotal与Hybrid Analysis运行并记录杀毒检测率指标（该指标定义见第五节A.2评估部分的评估设置小节）。结果呈现在表IV中。
+
+\begin{table}[htbp]
+	\centering
+	\caption{VirusTotal 和混合分析对于Malguise 和 LLMalMorph 生成的对抗变种AV 检测率（\%）的比较。}
+	\label{tab:5.2}
+	\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}ccccc}
+		\toprule
+		样本 & Optimization & Quality & Reusability & Security \\
+		\midrule
+		样本 & Optimization & Quality & Reusability & Security \\
+		样本 & Optimization & Quality & Reusability & Security \\
+		样本 & Optimization & Quality & Reusability & Security \\
+		样本 & Optimization & Quality & Reusability & Security \\
+		\bottomrule
+	\end{tabular*}
+\end{table}
