@@ -34,7 +34,7 @@
 虽然 LLMalMorph 可以利用任何 LLM 生成恶意软件变体，但我们选择 Codestral-22B [8] 作为我们的主要 LLM。我们精心设计的提示包含许多需要遵循的约束和指示。我们观察到 Codestral 模型能够比其他模型更精确地遵循这些特定指令来变异函数。此外，Codestral 为我们的用例提供了一组均衡的特性——220 亿参数、12 GB 模型大小和 32K 上下文窗口——并且与具有更高硬件要求的模型相比，它在长距离仓库级代码补全任务上具有卓越性能 [4], [9]。
 
 \section{实现细节}
-在 LLMalMorph 中，Function Mutator 内的 Extractor 子模块使用 Tree-sitter Parser\footnote{https://tree-sitter.github.io/tree-sitter/} 的 Python 绑定实现，利用其基于 C 的运行时进行高效解析。对于 LLM，我们使用了 Ollama\footnote{https://ollama.com/}，它便于本地 LLM 执行而无需外部 API 依赖，并提供了一个基于 Python 的接口。我们的实验设置包括一台配备 252 GB RAM 和 48 个处理器的 RTX 3090 GPU 服务器，以及一台配置了 VirtualBox 用于恶意软件编译的 Windows 10 虚拟机。LLMalMorph 的核心实现主要使用 Python 开发，部分组件（例如基于 lcs 的语义指标计算）使用 C++ 实现。
+在 LLMalMorph 中，Function Mutator 内的 Extractor 子模块使用 Tree-sitter Parser\footnote{https://tree-sitter.github.io/tree-sitter/} 的 Python 绑定实现，利用其基于 C 的运行时进行高效解析。对于 LLM，我们使用了 Ollama\footnote{https://ollama.com/}，它便于本地 LLM 执行而无需外部 API 依赖，并提供了一个基于 Python 的接口。我们的实验设置包括一台配备 252 GB RAM 和 48 个处理器的 RTX 3090 GPU 服务器，以及一台配置了 VirtualBox\footnote{https://www.virtualbox.org/} 用于恶意软件编译的 Windows 10 虚拟机。LLMalMorph 的核心实现主要使用 Python 开发，部分组件（例如基于 lcs 的语义指标计算）使用 C++ 实现。
 
 \section{评估结果与分析}
 我们使用算法 \ref{alg:Function Transformation Using LLM} 和 \ref{alg:Malware Variant Generation} 对要修改的文件进行优先级排序，按函数数量升序排列。这假设对源代码了解有限的攻击者会针对函数较少的文件，以最小化工作量并最大化修改文件的数量。如果出现平局，则随机选择文件。我们依次修改每个文件内的函数，但这可能会忽略对恶意软件行为至关重要的关键函数。自动化分离恶意函数具有挑战性，因为看似良性的函数（例如，简单的线程管理）可能促成恶意活动。我们的目标是评估这种简单的顺序方法是否能在不损害功能的情况下产生规避性变体。有关文件选择标准以及每个样本选择要修改的函数数量的标准，请参见附录 C。
@@ -44,3 +44,10 @@
 
 \subsection{VirusTotal}
 图2a显示，10个样本中有5个样本的所有恶意软件变种检测率均低于各自基准值。对于Exeinfector，其变种平均检测率为40.708\%，比基准值72.009\%低31.301\%，且检测率呈下降趋势。最显著的下降发生在修改第4个函数后，此时Reusability、Optimization和Security策略的检测率均跌破30\%，较基准值下降超42\%。在Fungus样本（第2个子图）中，平均检测率为63.167\%，而基准值为73.630\%。Optimization策略在修改三个函数（包括文件mUsb中操纵USB驱动器创建隐藏目录并自动执行文件的第三个函数）后达到最低检测率56.611\%。在图2a的Dexter子图中，检测率平均值为72.211\%，比基准值83.020\%低10.809\%。该样本的详细数据见附录D。对于HiddenVNC样本，平均检测率为64.664\%，较基准值76.503\%低11.84\%。Optimization与Quality变种检测率持续较低，而Security与Windows变种呈下降趋势；Reusability策略在第7次至第8次函数修改期间从67.593\%显著降至61.081\%。被修改的第八个函数被拆分为六个更小的函数，用于枚举可见窗口并捕获其内容。
+
+对于Predator样本，平均检测率与基准值几乎相同，多数变种表现相似。但Security策略呈下降趋势，其在第8个函数处达到最低检测率49.967\%（较基准值低8\%），Optimization策略紧随其后为54.591\%。Prosto样本的详细数据见附录D。在Conti勒索软件样本中，大多数变种检测率接近65.275\%的基准值，但Reusability策略在第7个函数处出现大幅下降，Optimization策略在第5个函数处同样大幅下跌——二者起始高于基准值但之后持续低于该值。Windows策略与Quality策略亦呈现下降趋势。对于Babuk样本，多数策略的检测率出现中等程度下降，其中Optimization策略在早期阶段造成最显著的跌幅。详细分析见附录D。
+
+对于RedPetya样本，我们观察到Security与Quality变种的检测率呈下降趋势。值得注意的是，Security策略在第8个函数处出现最急剧下降至46.746\%，较基准值降低15.75\%。该下降源于LLM使用了替代OpenSSL的加密库。被修改的第8个函数$hard\_reboot$通过调用Windows API调整进程权限并触发重启，使勒索软件能在下次启动时重获控制权，这是关键持久化机制。在RansomWar样本中，50.251\%的平均检测率较65.728\%的基准值低15.478\%，所有变种均跌破基准值。多数变种检测率位于50-58\%区间，而Optimization策略在第3个函数修改后跌至34.5\%。Windows策略以28.651\%的检测率（低于基准值37\%）达到最低值，展现出强规避能力。
+
+整体而言，Optimization策略在降低恶意软件检测率方面表现最为稳定，其次为Security与Reusability策略，而Windows策略虽在各样本中展现出强规避能力但效果波动较大。Optimization策略通过引入和重组数据结构，结合可能改变控制流与数据流的特定语言特性，从而修改了杀毒引擎通常可检测的代码模式与语义。这些特定修改需要新增头文件及库引用，进而引发编译后二进制文件的变化，最终改变其在杀毒检测器中的识别蓝图。Security策略采用替代性加密库可导致更显著的二进制差异，破坏杀毒软件基于模式的启发式签名机制，从而产生低于基准值的检测率。
+
