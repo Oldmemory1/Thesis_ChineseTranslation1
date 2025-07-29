@@ -117,3 +117,31 @@ Exeinfector雷达图（图3）显示：Quality策略工作量最高达23行，Ob
 图4显示Exeinfector与Fungus样本模式相似：Windows策略耗时最高（Exeinfector为0.3工时，Fungus达1.333工时）。Exeinfector样本中Security与Quality策略分别需0.15和0.2工时，Optimization耗时0.13工时，其余策略耗时极低。Fungus样本Windows策略高耗时源于调试"mUsb"函数；其他显著耗时包括Obfuscation（0.517工时）、Reusability（0.433工时）及Optimization（0.317工时）。Optimization作为降低检测率最有效的策略之一（见图2a、2b），其生成可编译执行文件所需工时较少，故在该二样本中具备高效生成恶意软件变种的优势。Dexter样本各策略工时分布近似均匀：Optimization（0.55工时）、Windows（0.633工时），其余如Obfuscation/Security/Reusability介于0.4-0.42工时。HiddenVNC样本则波动较大：Security（0.717工时）、Optimization（0.667工时）、Windows（0.45工时）。其Security策略高耗时源于LLM集成OpenSSL至现有代码库的困难，反映出LLM修改安全相关库的内在挑战。Predator子图中Reusability（0.267工时）、Security（0.383工时）、Obfuscation（0.2工时）耗时最高；Security策略因调试"BCryptDecrypt"函数需额外耗时。Prosto样本Security策略最耗时为0.417工时，Optimization/Windows/Reusability分别为0.267/0.183/0.167工时；此工作量源于添加OpenSSL及LLM对其函数处理不当。Conti勒索软件中除Reusability（0.23工时）外，多数策略调试耗时极低。Babuk样本Optimization/Reusability/Obfuscation/Windows策略均约0.083工时，分布近似均匀。RedPetya样本除Security策略（0.367工时，需集成LLM使用的"CryptoPP"库）外整体耗时较低；值得注意的是，该策略在图2a与2b中亦展现强规避性。末样本模式类同Babuk与Dexter：Windows与Security策略均为0.233工时，Reusability与Obfuscation为0.1833工时。
 
 整体而言，Windows策略因LLM处理冗长Windows API调用存在困难，在所有恶意软件样本中均需高调试工作量。同时，Security策略因引入新库与新特性、以及语法改动增加，常导致LLM在代码生成过程中出错，故需大量投入。
+
+\begin{table}[htbp]
+	\centering
+	\caption{所有样本在2个反病毒检测器下的功能保留率$\Phi^{M}$}
+	\label{tab:5.3}
+	\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}ccc}
+		\toprule
+		样本 & VirusTotal & 混合分析 \\
+		\midrule
+		Exeinfector & 75 & 72.222 \\
+		Fungus & 31.481 & 31.481 \\
+		Dexter & 66.667 & 66.667 \\
+		HiddenVNC & 75 & 68.182 \\
+		Predator & 36.667 & 50.0 \\
+		Prosto & 41.667 & 50.0 \\
+		Conti & 19.565 & 44.304 \\
+		Babuk & 30.0 & 37.255 \\
+		RedPetya & 85.714 & 88.889 \\
+		RansomWar & 55.556 & 54.902 \\
+		\bottomrule
+	\end{tabular*}
+\end{table}
+
+\subsection{对研究问题三（RQ3）的解答}
+
+表~\ref{tab:5.3}展示了通过公式1计算的所有十个恶意软件样本在VirusTotal和Hybrid Analysis平台上的功能保留指标（$\Phi^{M}$）。根据图2a，前四个及最后一个样本变体在VirusTotal上具有规避性，因其检测率低于各自基线阈值。在Hybrid Analysis中，Fungus、Dexter和RansomWar变体持续保持规避性。Exeinfector的$\Phi^{M}$在VirusTotal上高达75\%，在Hybrid Analysis上为72.222\%。Dexter和HiddenVNC均表现良好：Dexter在两个检测器中保持66.667\%的保留率，HiddenVNC在VirusTotal上为75\%，在Hybrid Analysis上约为68\%。Fungus的ΦM较低（约31.5\%），两个检测器中仅54个变体中的17个维持在检测阈值之下，在两大AV检测器上保留了原始语义。Predator和Prosto Stealer呈现中等保留率——VirusTotal上分别为36.667\%和41.667\%，二者在Hybrid Analysis上均达到50\%。在Predator中，LLM修改了"Stealing.cpp"中的六个函数；而在Prosto中，LLM对影响目录搜索、文件处理和Telegram相关操作的函数进行了跨多文件的广泛编辑。尽管通过调试确保可编译，但LLM生成的代码缺乏功能保留性。Conti的ΦM值最低，仅约20\%的规避变体为VirusTotal保留了语义。LLM修改了关键函数，包括禁用安全钩子、进程白名单和枚举逻辑驱动器的函数。这些修改降低了检测率，但导致功能保留性下降。在Babuk勒索软件案例中，其VirusTotal保留率与Fungus样本相近，而Hybrid Analysis保留率更高（37.255\%）。RedPetya以最高保留率（85.714\%和88.889\%）表现突出，证明即使进行如图2a、2b所示的安全相关复杂转换，LLMalMorph仍能成功实现规避的同时保持功能。最终样本的保留率约为55\%。
+
+这些结果表明，虽然优化（Optimization）能有效降低检测率，但在Fungus、Conti和Babuk等样本中难以保持语义保留。相反，四个样本展现出高$\Phi^{M}$值：Exeinfector、Dexter和HiddenVNC达到或超过66\%，RedPetya超过85\%，证明LLMalMorph能够生成功能完备且具有规避性的变体。值得注意的是，我们的转换仅在源代码级别操作，但在Dexter、HiddenVNC和RedPetya等复杂样本中仍能实现高功能保留，验证了LLMalMorph中系统化转换和提示设计的有效性。
