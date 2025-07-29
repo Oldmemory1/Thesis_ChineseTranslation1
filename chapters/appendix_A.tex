@@ -20,3 +20,29 @@
 	\end{tabularx}
 \end{table}
 
+\begin{table}[htb]
+	\centering
+	\caption{每个恶意软件样本的函数选择}
+	\label{tab:function_selection_for_each_malware_sample}
+    \begin{tabularx}{\textwidth}{@{} 
+    >{\RaggedRight}p{0.25\textwidth} 
+    >{\centering}p{0.25\textwidth} 
+    >{\centering}p{0.25\textwidth} 
+    >{\RaggedRight}p{0.25\textwidth} 
+    @{}}
+		\toprule
+		恶意软件样本 & 总共选择的函数 & 修改的函数 & 修改率 \\
+		\midrule
+		Exeinfector & 4 & 4 & 100\% \\
+		Fungus & 46 & 9 & 20\% \\
+        Dexter & 61 & 12 & 20\% \\
+		HiddenVNC bot & 60 & 12 & 20\% \\
+        Predator & 30 & 9 & 30\% \\
+        Prostostealer & 70 & 14 & 20\% \\
+		Conti ransomware & 93 & 14 & 15\% \\
+        Babuk ransomware & 35 & 11 & 30\% \\
+		RedPetya & 15 & 9 & 60\% \\
+        ransomware & 9 & 9 & 100\% \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
