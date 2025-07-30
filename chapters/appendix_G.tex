@@ -1,0 +1,94 @@
+\chapter{附录G-完整提示词示例}
+
+我们展示Fungus样本AntiSandbox()函数的完整提示词实例。此为main文件的第一个函数，亦属我们修改的第六个函数。以下示例展示优化代码转换策略的提示词。为便于理解，算法~\ref{alg:Prompt Construction Subroutine for LLM-based Function Transformation}所述用户提示词的不同部分以<<提示词名称>>符号高亮标注：
+
+\section{A. AntiSandbox()系统与用户提示词}
+System Prompt: You are an intelligent coding assistant who is expert in writing, editing, refactoring and debugging code. You listen to exact instructions and specialize in systems programming and use of C, C++ and C\# languages with Windows platforms
+
+<<Intro Prompt>>
+User Prompt: Below this prompt you are provided headers, global variables, class and struct definitions and 1 global function definition(s) from a cpp source code file. The parameters of the functions also have specific types. As an intelligent coding assistant, GENERATE one VARIANT of each of these functions: ***AntiSandbox()*** following these instructions: 
+
+<<Strategy Prompt>>
+1. Remove code redundancies.
+2. Identify performance bottlenecks and fix them.
+3. Simplify the code’s logic or structure and optimize
+data structures and algorithms if applicable.
+4. Use language-specific features or modern libraries if
+applicable.
+
+<<Preservation Rules Prompt>>
+REMEMBER, the generated code MUST MAINTAIN the same FUNCTIONALITY as the original code. Keep the usage of globally declared variables as it is. Modify ONLY the 1 free/global function(s) named ***AntiSandbox()***. If you find any custom functions/custom structure/class objects/custom types/custom variables that are used inside the given 1 function(s) but not in the provided code snippet, you can safely assume that these are defined elsewhere and you should use them in your generated code as it is. DO NOT modify the names of these and do not redefine them.
+
+<<Additional Constraints>> 
+These CRUCIAL instructions below MUST ALWAYS BE FOLLOWED while generating variants:
+1. You MUST NOT regenerate the extra information I provided to you such as headers, global variables, structs and classes for context.
+2. If you modify the functions ***AntiSandbox()***, you MUST NOT regenerate the original code. But if a function cannot be changed, then include the original code.
+3. ONLY generate the function variants and any new headers/libraries you used.
+4. You MUST NOT generate any extra natural language messages/comments.
+5. You MUST Generate all the modified functions within a single ‘‘‘cpp ‘‘‘ tag. For example your response should look like this for one generated function named ‘int func(int a)‘:
+‘‘‘cpp
+\#include<iostream>
+int func(int a) \{
+cout << a <<endl;
+return a + 1;
+\}
+‘‘‘
+Remember, if you have generated multiple functions, you should include all of them within the same ‘‘‘cpp ‘‘‘ tag.
+6. Use the global variables as they are inside your generated functions and do not change/redeclare the global variables.
+7. Always complete the function that you generate. Make sure to fill up the function body with the appropriate code. DO NOT leave any function incomplete.
+8. DO NOT change the function name, return type, parameters and their types, or the name and number of parameters of the original functions while generating variants.
+
+\begin{lstlisting}[language=C, caption={code1}, label={lst:code1}]
+<<Code>>
+Here is the code :
+#include "includes.h"
+#include "Confix.h"
+#ifndef DEBUG
+#pragma comment(lib, "Shell32")
+#endif
+#pragma comment(lib, "Shell32")
+char CurrentName[1024];
+// encoded strings
+char string_firewall_location[] = "SYSTEM\\CurrentControlSet\\Services\\SharedAccess\\Parameters\\FirewallPolicy\\StandardProfile\\AuthorizedApplications\\List";
+char string_firewall_enabled[] = ":*:Enabled:";
+BOOL AntiSandbox()
+{
+char *users[] = {"sandbox", "honey", "vmware","currentuser", "nepenthes"};
+DWORD size = 128;
+char szUser[128];
+int i;
+GetUserName(szUser, &size);
+CharLower(szUser);
+for (i = 0; i < (sizeof(users) / sizeof(LPTSTR)); i++)
+{
+if (strstr(szUser, users[i]) != 0)
+return TRUE;
+}
+return FALSE;
+}
+\end{lstlisting}
+
+\section{B. AntiSandbox()生成式LLM响应}
+我们同时呈现LLM对此提示词的响应。生成后从此响应提取代码部分，继续执行LLMalMorph后续流程。
+
+\begin{lstlisting}[language=C++, caption={LLM 生成的 AntiSandbox() 响应}, label={lst:code2}]
+#include<algorithm>
+#include<cctype>
+BOOL AntiSandbox() {
+const char* users[] = { "sandbox", "honey", "vmware",
+"currentuser", "nepenthes" };
+char szUser[128];
+DWORD size = sizeof(szUser); // added
+GetUserName(szUser, &size); // edited
+std::transform(szUser, szUser + strlen(szUser), szUser,
+::tolower);
+for (const char* user : users) {
+if (strstr(szUser, user) != nullptr) {
+return TRUE;
+}
+}
+return FALSE;
+}
+\end{lstlisting}
+
+In this variant of the ‘AntiSandbox()‘ function, I have removed code redundancies by using a range-based for loop to iterate over the ‘users‘ array. Additionally, I used the ‘std::transform‘ algorithm from the ‘<algorithm>‘ header and the ‘tolower‘ function from the ‘<cctype>‘ header to convert all characters in the ‘szUser‘ string to lowercase without explicitly calling ‘CharLower‘. This simplifies the code’s logic and makes it more modern C++.
