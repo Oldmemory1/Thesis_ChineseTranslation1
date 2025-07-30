@@ -1,0 +1,43 @@
+\chapter{附录B-详细的恶意软件描述}
+我们提供了为进行实验而选择的每个恶意软件样本的详细描述。我们还通过Triage Sandbox运行了所有样本，以从沙箱报告中了解它们的行为。对于两个样本，沙箱未提供有用信息，但我们添加了其余样本的描述，我们从沙箱中获得这些样本的信息。
+
+Exeinfector
+
+Exeinfector在相关的GitHub仓库[38]中被归类为感染型，并且VirusTotal为其标记了诸如持久化、长时间休眠、反调试（以及用户输入检测等行为。Triage沙箱报告显示了恶意活动，包括添加持久化运行项、修改注册表、在system32目录中释放文件以及执行系统语言发现。
+
+Fungus
+
+Fungus在相关的GitHub仓库[38]中被归类为通用犯罪软件，是一种复杂的多文件C++恶意软件。VirusTotal将其与ircbot和autorun7等家族标签相关联。它具有反沙箱技术、基于USB的传播、服务器通信、防火墙规避以及键盘记录能力。Triage报告指出其活动包括设置自动启动、加载DLL、执行释放的文件、修改注册表、执行系统语言和位置发现以及可疑地使用Windows API调用。
+
+Dexter
+Dexter是一种销售点木马，被识别为针对运行Microsoft Windows的POS机的恶意软件[55]。它于2012年被发现，以从POS机窃取信用卡和借记卡信息、将收集的数据发送到预定服务器以及表现出类僵尸程序行为而闻名[56]。VirusTotal将Dexter分类为木马、勒索软件和下载器，带有poxters和dexter等家族标签。Triage报告指出它会删除自身、崩溃、通过修改注册表添加运行项以实现持久化、执行系统语言发现以及使用可疑的Windows API函数，如“AdjustPrivilegeToken”、“WriteProcessMemory”和“EnumerateProcess”
+
+HiddenVNC Bot
+
+HiddenVNC，根据其源代码readme文件开发于2021年，是一种多文件的复杂C++恶意软件。VirusTotal将其分类为木马和银行木马，将其与tinukebot、tinynuke和tinuke等家族标签相关联，表明它可能是以开后门、窃取信息和下载恶意文件而闻名的Tinynuke木马僵尸程序的一个实现[57]。该readme将其描述为一个隐藏虚拟网络计算工具，它创建一个“隐藏桌面”，允许攻击者在用户不知情的情况下控制目标机器。其功能包括控制多台机器、启动应用程序（例如浏览器、PowerShell）以及在隐藏桌面上执行远程命令。它生成两个可执行文件；我们使用VirusTotal检测率为76.503\%的Client.exe，因为它比Server.exe（15.277\%）更具恶意性。
+
+Predator
+
+Predator，也称为Predator the Thief，于2018年中首次被发现[58]。该样本是一种复杂的C++信息窃取木马，从其受感染主机窃取广泛的数据，例如系统信息、存储的浏览器密码、cookie、表单数据，甚至加密货币钱包地址[58]。它还能捕获网络摄像头照片、记录击键、从应用程序（例如VPN、FTP、游戏客户端）提取凭证，并收集剪贴板内容和加密货币钱包文件[59]。VirusTotal将其归类为木马，并与窃取器、adwarex和fragtor等家族标签相关联。Triage沙箱报告向我们显示，它读取FTP客户端存储的数据文件、读取Web浏览器的用户/配置文件数据、从不安全的文件中窃取凭证、访问加密货币钱包并可能执行凭据收集。
+
+Prosto
+
+Prosto，也称为ProstoStealer，同样是一种信息窃取木马，但比Predator样本大得多且复杂得多，并且是用C++编写的。它利用受害机器窃取有价值且有用的信息，如登录信息、凭证、密码和直接文件。所有细节都存储在由攻击者控制的服务器中，以便后续用于诈骗和欺诈活动[60]。VirusTotal将此样本分类为木马、病毒和间谍软件，并用fragtor和convagent等家族标签进行标记。该样本的Triage沙箱报告告诉我们，它会检查计算机位置设置、读取Web浏览器的用户数据、修改Internet Explorer设置，并且还有可疑地使用“FindShellTrayWindow”、“SetWindowsHookEx”、“WriteProcessMemory”等方法。
+
+Conti
+
+Conti勒索软件于2019年末出现[61]。这是一种极其复杂的恶意软件，包含不同的活动部件，拥有超过8000行用C++编写的代码。在我们的实验中，我们使用该样本的cryptor可执行文件。它采用双重勒索策略，在窃取数据的同时加密文件，以迫使受害者支付赎金。它以其快速的加密速度和针对医疗保健等关键行业而闻名[61]。VirusTotal将该可执行文件分类为木马和勒索软件，并将其与conti和adwarex等家族标签相关联。
+
+Babuk
+
+Babuk，也称为Babyk，是一种复杂的勒索软件，于2021年初被发现[62]，针对多个平台，如Windows、适用于Linux的ARM以及VMware ESXI环境，并使用椭圆曲线算法构建加密密钥[63]。该勒索软件用C++编写，约4000行代码，极其复杂，针对多个国家和地区的医疗保健、塑料、运输、电子和农业等行业[62]。我们在实验中使用了该勒索软件的加密模块，并使用了生成的“.bin”格式可执行文件。VirusTotal将其归类为勒索软件和木马，并用babuk、babyk和epack等家族标签进行标记。Triage报告向我们显示，它是一种babuk加密器并属于babuk家族，会删除自身的卷影副本、重命名多个文件并添加文件扩展名、枚举已连接的驱动器和物理存储设备、与卷影副本交互，并且还有各种可疑的Windows API使用。
+
+RedPetya Ransomware
+
+RedPetya属于Petya家族加密恶意软件，于2016年首次被发现[64]。它采用引导锁式加密，在感染受害者后覆盖系统的主引导记录并强制重启；此时不是加载Windows，而是显示一个虚假屏幕，同时恶意软件使用加密算法在磁盘上秘密加密NTFS主文件表[65]。我们使用了其源代码的一个开源版本，该版本用C++编写，约1500行代码，使用OpenSSL进行加密，是对RedPetya恶意软件的完全重写。VirusTotal将此样本分类为木马和勒索软件，并给出petya、heur3和diskcoder等家族标签。Triage报告还显示它具有持久性，是一个引导区病毒，并且会写入主引导记录。它还显示可疑地使用Windows API，如“EnumeratesProcesses”、“AdjustPrivilegeToken”。
+
+RansomWar
+
+该样本是一种相对简单的勒索软件，用C语言编写，共1377行代码，使用河豚加密算法加密文件，并且代码中内置了邮件发送机制。VirusTotal将其归类为木马、勒索软件，并给出barys、ransomware等家族标签。从Triage沙箱中，我们得知它会枚举已连接的驱动器并在System32目录中释放文件。
+
+
