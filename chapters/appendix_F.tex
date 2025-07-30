@@ -1,0 +1,90 @@
+\chapter{附录F-所有提示词}
+
+
+我们提供通过算法~\ref{alg:Prompt Construction Subroutine for LLM-based Function Transformation}所述LLM修改LLMalMorph函数所使用的全部提示词：
+\section{A. 系统提示词}
+System Prompt: You are an intelligent coding assistant who is expert in writing, editing, refactoring and debugging code. You listen to exact instructions and specialize in systems programming and use of C, C++ and C\# languages with Windows platforms
+
+\section{B. 介绍提示词}
+Below this prompt you are provided headers, global variables, class and struct definitions and self.num\_functions global function definition(s) from a self.language\_name source code file. The parameters of the functions also have specific types. As an intelligent coding assistant, GENERATE one VARIANT of each of these functions: ***’, ’.join([func\_name for func\_name in self.function\_names])*** following these instructions:
+
+\section{C. 代码转换策略提示词}
+如第四-B小节所述，我们开发了六种代码转换策略。各策略具体提示词如下：
+
+\subsection{代码优化}
+1. Remove code redundancies.
+
+2. Identify performance bottlenecks and fix them.
+
+3. Simplify the code’s logic or structure and optimize data structures and algorithms if applicable.
+
+4. Use language-specific features or modern libraries if applicable.
+
+\subsection{代码质量与可靠性}
+1. Check error handling and edge cases.
+
+2. Follow coding practices and style guidelines.
+
+3. Add proper documentation to classes and functions, and comments for complex parts.
+
+\subsection{代码复用性}
+Make the code reusable by dividing supplied functions into smaller function blocks if and where applicable. The smaller functions should be called inside the respective supplied functions as needed.
+
+\subsection{代码安全性}
+1.Identify security vulnerabilities and fix them.
+
+2.If the function you are modifying contains cryptographic operations,change the cryptographic library used for those operations.If no cryptographic operations are present,no changes are necessary.
+
+3.Follow secure coding standards and guidelines.
+
+\subsection{代码混淆}
+1. Change the given function’s and LOCAL variable’s names to meaningless, hard-to-understand strings which are not real words. DO NOT redefine or rename global variables (given to you) and names of functions that are called inside the given function ( might be defined elsewhere ) under any circumstances. However if the given function name is any of ‘main‘, ‘wmain‘, ‘WinMain‘, ‘wWinMain‘, ‘DllMain‘, ‘\_tWinMain‘, ‘\_tmain‘ do not change it’s name, only change the local variable’s names inside the function.
+
+2. Add unnecessary jump instructions, loops, and conditional statements inside the functions.
+
+3. Add unnecessary functions and call those functions inside the original functions.
+
+4. Add anti-debugging techniques to the code.
+
+5. If there are loops/conditional statements in the code change them to their equivalent alternatives and make them more difficult to follow.
+
+6. Incorporate code to the variants that activates under very rare and obscure cases without altering core functionality, making the rare code hard to detect during testing.
+
+\subsection{WindowsAPI专用转换}
+1. Identify all Windows API function calls in the given functions.
+
+2. If there are such function calls, replace each identified Windows API function call with an alternative Windows API function call or sequence of calls that achieves the same task.
+
+3. If applicable, use indirect methods or wrappers around the Windows API calls to achieve the same functionality.
+
+4. Ensure that the functionality remains the same after the replacement.
+
+\section{D. 保留规则提示词}
+REMEMBER, the generated code MUST MAINTAIN the same FUNCTIONALITY as the original code. Keep the usage of globally declared variables as it is. Modify ONLY the self.num\_functions free/global function(s) named ***’, ’.join([func\_name for func\_name in self.function\_names])***. If you find any custom functions/custom structure/class objects/custom types/custom variables that are used inside the given self.num\_functions function(s) but not in the provided code snippet, you can safely assume that these are defined elsewhere and you should use them in your generated code as it is. DO NOT modify the names of these and do not redefine them.
+
+\section{E. 附加约束}
+These CRUCIAL instructions below MUST ALWAYS BE FOLLOWED while generating variants:
+1. You MUST NOT regenerate the extra information I provided to you such as headers, global variables, structs and classes for context.
+
+2. If you modify the functions ***’, ’.join([func\_name for func\_name in self.function\_names])***, you MUST NOT regenerate the original code. But if a function cannot be changed, then include the original code. 
+
+3. ONLY generate the function variants and any new headers/libraries you used.
+
+4. You MUST NOT generate any extra natural language messages/comments.
+
+5. You MUST Generate all the modified functions within a single ‘‘‘self.language\_name ‘‘‘ tag. For example your response should look like this for one generatedfunction named ‘int func(int a)‘: f"{example\_code}" Remember, if you have generated multiple functions, you should include all of them within the same ‘‘‘self.language\_name ‘‘‘ tag.
+
+6. Use the global variables as they are inside your generated functions and do not change/redeclare the global variables.
+
+7. Always complete the function that you generate. Make sure to fill up the function body with the appropriate code. DO NOT leave any function incomplete.
+
+上述提示词使用的"example\_code"：
+
+’c’:‘‘‘self.language\_name
+ \#include<stdio.h>
+ intfunc(inta) \{ printf("\%d",a);returna+1; \}
+‘‘‘
+’cpp’:‘‘‘self.language\_name
+ \#include<iostream>
+ intfunc(inta) \{ cout<<a<<endl;return a +1; \}
+‘‘‘
