@@ -1,0 +1,56 @@
+\chapter{附录C-用于LLM修改的文件及恶意软件函数选择数量}
+
+本节阐述我们从每个恶意软件样本中选择待修改函数数量的方法。表~\ref{tab:4.1}虽概述了各恶意软件样本的函数总量，但我们的选择过程需经严格筛选以确保修改的有效性。我们排除了属于外部库（如加密库和头文件）的文件，仅聚焦于包含自定义恶意软件代码的文件，并仅考虑按算法~\ref{alg:Function Transformation Using LLM}顺序修改全局函数。
+
+鉴于不同恶意软件样本的函数数量存在差异，我们采用系统化策略：对函数较少的样本修改更大比例，而对函数数量显著的样本则修改较小比例。该方法在保证充分修改覆盖率与LLMalMorph所需可控人工调试工作量之间取得了平衡。
+
+应用该方法，我们选取并修改了如下函数：
+\begin{table}[htb]
+	\centering
+	\caption{修改的函数选择标准}
+	\label{tab:function_selection_criteria_for_modification}
+    \begin{tabularx}{\textwidth}{@{} 
+    >{\RaggedRight}p{0.5\textwidth} 
+    >{\RaggedRight}p{0.5\textwidth} 
+    @{}}
+		\toprule
+		函数数量 & 修改率 \\
+		\midrule
+		\textless 10  & 100\% \\
+		10 - 20 & 60\% \\
+        20 - 40  & 30\% \\
+		40 - 70 & 20\% \\
+        \textgreater 70  & 15\% \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+应用此方法，我们选择并修改了以下函数：
+\begin{table}[htb]
+	\centering
+	\caption{每个恶意软件样本的函数选择}
+	\label{tab:function_selection_for_each_malware_sample}
+    \begin{tabularx}{\textwidth}{@{} 
+    >{\RaggedRight}p{0.25\textwidth} 
+    >{\centering}p{0.25\textwidth} 
+    >{\centering}p{0.25\textwidth} 
+    >{\RaggedRight}p{0.25\textwidth} 
+    @{}}
+		\toprule
+		恶意软件样本 & 总共选择的函数 & 修改的函数 & 修改率 \\
+		\midrule
+		Exeinfector & 4 & 4 & 100\% \\
+		Fungus & 46 & 9 & 20\% \\
+        Dexter & 61 & 12 & 20\% \\
+		HiddenVNC bot & 60 & 12 & 20\% \\
+        Predator & 30 & 9 & 30\% \\
+        Prostostealer & 70 & 14 & 20\% \\
+		Conti ransomware & 93 & 14 & 15\% \\
+        Babuk ransomware & 35 & 11 & 30\% \\
+		RedPetya & 15 & 9 & 60\% \\
+        ransomware & 9 & 9 & 100\% \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+在必要处我们进行向上取整。对于RansomWar样本，我们最初尝试修改包含4个函数的"blowfish.c"文件未能成功，这源于LLM即使在纠错机制下仍存在生成函数变体的限制。因此，我们将修改转向包含9个函数的"RansomWar.c"文件。由于该文件属于函数数量少于10的样本类别，我们修改了其全部函数。总体而言，这种结构化方法使我们能在保持一致性的同时，确保不会在函数数量庞大的样本（例如Conti勒索软件）中修改过多函数——这考虑到LLMalMorph所需的人工调试需求。
