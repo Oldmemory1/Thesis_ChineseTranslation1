@@ -7,7 +7,7 @@
 \section{评估设置}
 
 \subsection{选择样本}
-由于最新的恶意软件源代码稀缺，大多数恶意软件研究都集中在可执行文件上。我们检查了公共数据库 [38], [39]，发现大多数可用的 Windows 恶意软件源代码是 32 位的，因此我们将研究重点放在 32 位变体上。我们选择了能够编译成可运行可执行文件、并表现出可通过 VirusTotal 或 Hybrid Analysis 检测到的恶意行为（其 AV 检测率≥60\%）的样本。这产生了十个具有不同复杂性和类型的恶意软件候选样本。RansomWar 样本使用 GCC 编译，其余样本使用 Microsoft Visual Studio 2022\footnote{https://visualstudio.microsoft.com/vs/}编译（因为提供了 .sln 文件）。表 II 总结了选定样本的关键细节。对于 Conti 和 Babuk 勒索软件，我们的分析集中在负责加密的加密器组件上。有关样本的详细信息请参见附录 B。
+由于最新的恶意软件源代码稀缺，大多数恶意软件研究都集中在可执行文件上。我们检查了公共数据库 \parencite{Cryptware2024}, \parencite{Vxunderground2024}，发现大多数可用的 Windows 恶意软件源代码是 32 位的，因此我们将研究重点放在 32 位变体上。我们选择了能够编译成可运行可执行文件、并表现出可通过 VirusTotal 或 Hybrid Analysis 检测到的恶意行为（其 AV 检测率≥60\%）的样本。这产生了十个具有不同复杂性和类型的恶意软件候选样本。RansomWar 样本使用 GCC 编译，其余样本使用 Microsoft Visual Studio 2022\footnote{https://visualstudio.microsoft.com/vs/}编译（因为提供了 .sln 文件）。表 II 总结了选定样本的关键细节。对于 Conti 和 Babuk 勒索软件，我们的分析集中在负责加密的加密器组件上。有关样本的详细信息请参见附录 B。
 
 \subsection{评估指标}
 我们使用给定的评估指标：防病毒（AV）检测率（$R^{\hat{Ms}}$）。我们使用 VirusTotal 评估 AV 检测率，该平台使用来自不同供应商的多个 AV 引擎扫描样本。每个样本可用的检测器数量因可用性而异。令 $D$ 为可用检测器的集合，$\hat{D} \subseteq D$ 为将恶意软件变体标记为恶意的检测器集合。在第 k 次运行时，变体 $\hat{M_{s}}$ 的 AV 检测率 $R^{\hat{M_{s}}}_{k}$ 定义为 $R^{\hat{M_{s}}}_{k} = \frac{|\hat{D}|}{|D|} \times 100$，其中 $|.|$ 表示两个集合的大小。
@@ -15,7 +15,7 @@
 每个样本将进行$k$次运行，并计算平均检测率$R^{\hat{M_{s}}}=\frac{1}{k} \sum_{i=1}^{k} R_{k}^{\hat{M_{s}}}$。我们在实验中设定 k=3 以解释不同运行间的变异性。我们还使用 Hybrid Analysis，该工具包含静态分析、基于机器学习的分析以及使用不同引擎的多重扫描分析。检测性能以每个恶意软件样本及其变体在 k 次运行上的平均百分比表示。我们使用这两个工具的免费版本，并通过其各自的 API 自动化样本上传、结果检索和后处理。
 
 \subsection{策略导向的机器学习分类器攻击成功率 (ASR)}
-攻击成功率 (Attack Success Rate, ASR) 是评估对抗攻击的广泛使用的指标 [20], [40]，即生成的恶意软件变体成功逃避目标系统检测的比例。我们针对三种基于机器学习的恶意软件分类器评估 ASR：Malconv [41]、Malgraph [42] 和一个训练好的 ResNet50 恶意软件分类器 [43]。模型细节详见附录 E。令 M 为一个原始恶意软件样本，将我们的策略 s 应用于所有修改文件 $\hat{F} \subseteq F$ 并为 $j$ 个转换函数生成变体 $V_{s}^{M} = \{\hat{M_{1}}, \hat{M_{2}}, ..., \hat{M_{j}}\}$。对于给定的目标分类器 $C$，令 $\hat{V_{s,C}^{M}} = \{ \hat{M} \in V_{s}^{M} : C(\hat{M}) = benign\}$ 为成功逃避 $C$ 的变体子集。则攻击成功率为 $ASR = \frac{|\hat{V_{s,C}^{M}}|}{|V_{s}^{M}|} \times 100$。其中 $|.|$ 表示集合的大小。
+攻击成功率 (Attack Success Rate, ASR) 是评估对抗攻击的广泛使用的指标\parencite{Lucas2021}, \parencite{Ling2019}，即生成的恶意软件变体成功逃避目标系统检测的比例。我们针对三种基于机器学习的恶意软件分类器评估 ASR：Malconv\parencite{Raff2017}、Malgraph\parencite{Ling2022} 和一个训练好的 ResNet50 恶意软件分类\parencite{Li2025}。模型细节详见附录 E。令 M 为一个原始恶意软件样本，将我们的策略 s 应用于所有修改文件 $\hat{F} \subseteq F$ 并为 $j$ 个转换函数生成变体 $V_{s}^{M} = \{\hat{M_{1}}, \hat{M_{2}}, ..., \hat{M_{j}}\}$。对于给定的目标分类器 $C$，令 $\hat{V_{s,C}^{M}} = \{ \hat{M} \in V_{s}^{M} : C(\hat{M}) = benign\}$ 为成功逃避 $C$ 的变体子集。则攻击成功率为 $ASR = \frac{|\hat{V_{s,C}^{M}}|}{|V_{s}^{M}|} \times 100$。其中 $|.|$ 表示集合的大小。
 
 \subsection{策略导向的代码编辑工作量 ($W_{s}^{M}$)}
 该指标基于需要手动编辑以编译LLM生成代码的总代码行数来比较策略 $s$。值越高表明需要更广泛的手动干预，意味着LLM在该策略下犯了更严重的错误。对于给定的恶意软件 $M$，令 $\hat{F} \subseteq F$ 表示 $F$ 个文件中被修改的文件数量。恶意软件 $M$ 和策略 $s$ 的编辑工作量 $W_s^{M}$ 定义为在文件 $\hat{F}$ 中所有转换后的函数 $\{f_{1}^{i}, f_{2}^{i}... f_{j}^{i}\}$ 上编辑（添加、修改或删除）的总代码行数，计算公式为 $W_{s}^{M}=\sum_{i=1}^{\hat{F}} \sum_{t=1}^{j} L_{edit}(f_{t}^{i})$，其中 $L_{edit}$ 统计函数 $\hat{f_{t}^{i}}$ 被编辑代码的行数。
@@ -24,14 +24,14 @@
 该指标衡量针对每种策略调试和配置恶意软件中转换后函数所需的人力投入。它量化了生成一个成功编译的 PE 文件所需的总工时。对于给定的恶意软件 $M$ 和代码转换策略 $s$，人力投入 $H_{s}^{M}$ 的计算公式为 $H_{s}^{M} = \sum_{i=1}^{\hat{F}} \sum_{t=1}^{j} ManHours(\hat{f_{t}^{i}})$。此处，求和表示在策略 $s$ 下，在修改文件 $\hat{F}$ 中所有转换后的函数 $\{f_{1}^{i},f_{2}^{i}...f_{j}^{i}\}$ 上所花费的总工时。
 
 \subsection{功能保留指标 ($\Phi^{M}$)}
-该指标评估了经 LLMalMorph 转换后，恶意软件语义在变体中保留的程度。由于可执行文件固有的复杂性，尚无精确方法能判断恶意软件 $M$ 与其变种 $\hat{M}$ 之间的语义等价性 [44]。因此，文献中遵循的评估方法包括比较恶意软件与其变体之间的 API 调用序列 [22]，或通过在沙箱中运行来比较恶意软件及其变体的行为 [20], [23]。
+该指标评估了经 LLMalMorph 转换后，恶意软件语义在变体中保留的程度。由于可执行文件固有的复杂性，尚无精确方法能判断恶意软件 $M$ 与其变种 $\hat{M}$ 之间的语义等价性 \parencite{Apel2009}。因此，文献中遵循的评估方法包括比较恶意软件与其变体之间的 API 调用序列 \parencite{Ling2024}，或通过在沙箱中运行来比较恶意软件及其变体的行为\parencite{Lucas2021}, \parencite{Digregorio2024}。
 
 我们采用类似方法，并利用最长公共子序列 (lcs) 算法来比较 $M$ 和 $\hat{M}$ 之间的 API 调用序列。转换后的变体必须保留原始的 API 调用顺序，允许存在不破坏此序列的额外调用。API 调用序列使用专有沙箱收集。归一化的最长公共子序列定义为 $\hat{lcs}(M, \hat{M})= \frac{lcs(M, \hat{M})}{Length(API(M))}$，其中分母是 $M$ 的 API 序列长度。分数范围从 0 到 1，1 表示完全相同的 API 序列。最后，我们计算功能保留率 $\Phi^{M} = \frac{|\hat{M} \in \psi^{\hat{M}}:\hat{lcs}(M,\hat{M}) \geq \delta|}{|\psi^{\hat{M}}|} \times 100$。
 
 此处，$\psi^{\hat{M}}$（总变体集）定义为所有 AV 检测率 $R^{\hat{M_{s}}}$ 低于 $M$ 的基线检测率的恶意软件变体 $\hat{M}$ 的集合。分子代表 $\psi^{\hat{M}}$ 中保留了语义等价性的子集的大小，我们通过考虑归一化的最长公共子序列得分（其值大于预定义阈值 δ）来确定该子集，而 $|\psi^{\hat{M}}|$ 是整个总变体集的大小。我们通过经验分析恶意软件变体和原始样本，选择 $\delta$ 的值为 0.96。我们选取不同样本在离散值集上的恶意软件变体，并将其上传到 Triage Sandbox\footnote{https://tria.ge/}。我们分析了变体和原始恶意软件样本的报告，以比较行为指标、注册表修改、网络调用等。我们观察到，在某些情况下，行为漂移在分数低于 0.96 时开始出现，而在其他情况下，即使分数略高于该值，功能等价性也得以保持。然而，大多数保留了关键行为的变体得分在 0.96 或以下。因此，我们选择 $\delta = 0.96$ 作为上限，以确保被接受的变体在 API 序列和执行行为上保持高度相似性。
 
 \section{模型选择}
-虽然 LLMalMorph 可以利用任何 LLM 生成恶意软件变体，但我们选择 Codestral-22B [8] 作为我们的主要 LLM。我们精心设计的提示包含许多需要遵循的约束和指示。我们观察到 Codestral 模型能够比其他模型更精确地遵循这些特定指令来变异函数。此外，Codestral 为我们的用例提供了一组均衡的特性——220 亿参数、12 GB 模型大小和 32K 上下文窗口——并且与具有更高硬件要求的模型相比，它在长距离仓库级代码补全任务上具有卓越性能 [4], [9]。
+虽然 LLMalMorph 可以利用任何 LLM 生成恶意软件变体，但我们选择 Codestral-22B \parencite{MAI2024} 作为我们的主要 LLM。我们精心设计的提示包含许多需要遵循的约束和指示。我们观察到 Codestral 模型能够比其他模型更精确地遵循这些特定指令来变异函数。此外，Codestral 为我们的用例提供了一组均衡的特性——220 亿参数、12 GB 模型大小和 32K 上下文窗口——并且与具有更高硬件要求的模型相比，它在长距离仓库级代码补全任务上具有卓越性能 \parencite{Dubey2024}, \parencite{Roziere2023}。
 
 \section{实现细节}
 在 LLMalMorph 中，Function Mutator 内的 Extractor 子模块使用 Tree-sitter Parser\footnote{https://tree-sitter.github.io/tree-sitter/} 的 Python 绑定实现，利用其基于 C 的运行时进行高效解析。对于 LLM，我们使用了 Ollama\footnote{https://ollama.com/}，它便于本地 LLM 执行而无需外部 API 依赖，并提供了一个基于 Python 的接口。我们的实验设置包括一台配备 252 GB RAM 和 48 个处理器的 RTX 3090 GPU 服务器，以及一台配置了 VirtualBox\footnote{https://www.virtualbox.org/} 用于恶意软件编译的 Windows 10 虚拟机。LLMalMorph 的核心实现主要使用 Python 开发，部分组件（例如基于 lcs 的语义指标计算）使用 C++ 实现。
@@ -83,7 +83,7 @@
 尽管LLMalMorph通过提示词工程和精选转换策略修改函数（未直接针对任何ML恶意软件分类器进行优化），仍在部分样本的Optimization与Security等策略上展现出显著ASR，这支持了杀毒检测率降低的观测结论。正如先前在杀毒检测器语境中指出的，这些策略的高ASR可能源于LLM使用新库、新特性及控制流重组，这些改变很可能促进了规避成功。
 
 \subsection{比较分析}
-现有大多数对抗性恶意软件生成研究（包括Malguise[22]等最新框架）集中于直接修改已编译的二进制文件以生成规避性变种。因此，我们将LLMalMorph与领先的二进制级对抗性恶意软件生成框架Malguise进行对比。如研究问题1（RQ1）解答中机器学习分类器小节所述，仅有4/10样本（Fungus、Dexter、Conti和Babuk）被Malgraph分类器识别为恶意软件，其他分类器没有任何样本被判定为恶意。我们在上述四个样本上运行Malguise[22]，以Malgraph为规避目标，为每个样本生成对抗性变种。Fungus、Dexter和Babuk成功绕过Malgraph分类器，而Conti未能实现规避。尽管如此，我们收集了Malguise生成的所有对抗性变种（三个成功规避样本和一个未成功样本），通过VirusTotal与Hybrid Analysis运行并记录杀毒检测率指标（该指标定义见第五节A.2评估部分的评估设置小节）。结果呈现在表\ref{tab:5.2}中。
+现有大多数对抗性恶意软件生成研究（包括Malguise\parencite{Ling2024}等最新框架）集中于直接修改已编译的二进制文件以生成规避性变种。因此，我们将LLMalMorph与领先的二进制级对抗性恶意软件生成框架Malguise进行对比。如研究问题1（RQ1）解答中机器学习分类器小节所述，仅有4/10样本（Fungus、Dexter、Conti和Babuk）被Malgraph分类器识别为恶意软件，其他分类器没有任何样本被判定为恶意。我们在上述四个样本上运行Malguise\parencite{Ling2024}，以Malgraph为规避目标，为每个样本生成对抗性变种。Fungus、Dexter和Babuk成功绕过Malgraph分类器，而Conti未能实现规避。尽管如此，我们收集了Malguise生成的所有对抗性变种（三个成功规避样本和一个未成功样本），通过VirusTotal与Hybrid Analysis运行并记录杀毒检测率指标（该指标定义见第五节A.2评估部分的评估设置小节）。结果呈现在表\ref{tab:5.2}中。
 
 \begin{table}[htbp]
 	\centering
